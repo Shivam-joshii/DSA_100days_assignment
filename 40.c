@@ -1,36 +1,56 @@
-def heapify(arr, n, i):
-    largest = i
-    left = 2*i + 1
-    right = 2*i + 2
+#include <stdio.h>
 
-    if left < n and arr[left] > arr[largest]:
-        largest = left
+void swap(int *a, int *b){
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
 
-    if right < n and arr[right] > arr[largest]:
-        largest = right
+void heapify(int arr[], int n, int i){
+    int largest = i;
+    int left = 2*i + 1;
+    int right = 2*i + 2;
 
-    if largest != i:
-        arr[i], arr[largest] = arr[largest], arr[i]
-        heapify(arr, n, largest)
+    if(left < n && arr[left] > arr[largest])
+        largest = left;
 
+    if(right < n && arr[right] > arr[largest])
+        largest = right;
 
-def heapSort(arr):
-    n = len(arr)
+    if(largest != i){
+        swap(&arr[i], &arr[largest]);
+        heapify(arr, n, largest);
+    }
+}
 
-    # Build Max Heap
-    for i in range(n//2 - 1, -1, -1):
-        heapify(arr, n, i)
+void heapSort(int arr[], int n){
 
-    # Extract elements
-    for i in range(n-1, 0, -1):
-        arr[i], arr[0] = arr[0], arr[i]
-        heapify(arr, i, 0)
+    // Build Max Heap
+    for(int i = n/2 - 1; i >= 0; i--)
+        heapify(arr, n, i);
 
+    // Extract elements
+    for(int i = n-1; i > 0; i--){
+        swap(&arr[0], &arr[i]);
+        heapify(arr, i, 0);
+    }
+}
 
-arr = [12, 11, 13, 5, 6, 7]
+int main(){
+    int n;
 
-heapSort(arr)
+    scanf("%d", &n);
 
-print("Sorted array:")
-for i in arr:
-    print(i, end=" ")
+    int arr[n];
+
+    for(int i = 0; i < n; i++)
+        scanf("%d", &arr[i]);
+
+    heapSort(arr, n);
+
+    for(int i = 0; i < n; i++)
+        printf("%d ", arr[i]);
+
+    return 0;
+}
+
