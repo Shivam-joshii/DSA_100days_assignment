@@ -1,57 +1,95 @@
-heap = []
+#include <stdio.h>
+#include <string.h>
 
-def heapify_up(i):
-    while i > 0 and heap[(i-1)//2] > heap[i]:
-        p = (i-1)//2
-        heap[p], heap[i] = heap[i], heap[p]
-        i = p
+#define MAX 100
 
-def heapify_down(i):
-    n = len(heap)
-    while True:
-        smallest = i
-        left = 2*i + 1
-        right = 2*i + 2
+int heap[MAX];
+int size = 0;
 
-        if left < n and heap[left] < heap[smallest]:
-            smallest = left
-        if right < n and heap[right] < heap[smallest]:
-            smallest = right
+void swap(int *a, int *b){
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
 
-        if smallest != i:
-            heap[i], heap[smallest] = heap[smallest], heap[i]
-            i = smallest
-        else:
-            break
+void heapifyUp(int index){
+    while(index > 0){
+        int parent = (index - 1) / 2;
+        if(heap[parent] > heap[index]){
+            swap(&heap[parent], &heap[index]);
+            index = parent;
+        } else {
+            break;
+        }
+    }
+}
 
-def insert(x):
-    heap.append(x)
-    heapify_up(len(heap)-1)
+void heapifyDown(int index){
+    while(1){
+        int left = 2*index + 1;
+        int right = 2*index + 2;
+        int smallest = index;
 
-def extractMin():
-    if len(heap) == 0:
-        print(-1)
-        return
-    print(heap[0])
-    heap[0] = heap[-1]
-    heap.pop()
-    if heap:
-        heapify_down(0)
+        if(left < size && heap[left] < heap[smallest])
+            smallest = left;
 
-def peek():
-    if len(heap) == 0:
-        print(-1)
-    else:
-        print(heap[0])
+        if(right < size && heap[right] < heap[smallest])
+            smallest = right;
 
-n = int(input())
+        if(smallest != index){
+            swap(&heap[index], &heap[smallest]);
+            index = smallest;
+        } else {
+            break;
+        }
+    }
+}
 
-for _ in range(n):
-    op = input().split()
+void insert(int x){
+    heap[size] = x;
+    heapifyUp(size);
+    size++;
+}
 
-    if op[0] == "insert":
-        insert(int(op[1]))
-    elif op[0] == "extractMin":
-        extractMin()
-    elif op[0] == "peek":
-        peek()
+void extractMin(){
+    if(size == 0){
+        printf("-1\n");
+        return;
+    }
+
+    printf("%d\n", heap[0]);
+    heap[0] = heap[size-1];
+    size--;
+    heapifyDown(0);
+}
+
+void peek(){
+    if(size == 0)
+        printf("-1\n");
+    else
+        printf("%d\n", heap[0]);
+}
+
+int main(){
+    int n, x;
+    char op[20];
+
+    scanf("%d", &n);
+
+    for(int i = 0; i < n; i++){
+        scanf("%s", op);
+
+        if(strcmp(op, "insert") == 0){
+            scanf("%d", &x);
+            insert(x);
+        }
+        else if(strcmp(op, "extractMin") == 0){
+            extractMin();
+        }
+        else if(strcmp(op, "peek") == 0){
+            peek();
+        }
+    }
+
+    return 0;
+}
